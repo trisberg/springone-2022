@@ -1,0 +1,21 @@
+--- 
+apiVersion: kpack.io/v1alpha2
+kind: Builder
+metadata:
+  name: sample
+  namespace: default
+spec:
+  serviceAccountName: kpack-build
+  tag: docker.io/trisberg/builder-native
+  stack:
+    name: jammy-base
+    kind: ClusterStack
+  store:
+    name: native
+    kind: ClusterStore
+  order:
+  - group:
+    - id: paketo-buildpacks/bellsoft-liberica
+    - id: paketo-buildpacks/java-native-image
+  - group:
+    - id: paketo-buildpacks/nodejs

@@ -1,0 +1,25 @@
+apiVersion: kpack.io/v1alpha2
+kind: Image
+metadata:
+  name: quote
+  namespace: default
+spec:
+  build:
+    env:
+    - name: BP_JVM_VERSION
+      value: "17"
+    - name: BP_NATIVE_IMAGE
+      value: "true"
+    resources: {}
+  builder:
+    kind: Builder
+    name: sample
+  failedBuildHistoryLimit: 10
+  imageTaggingStrategy: BuildNumber
+  serviceAccountName: kpack-build
+  source:
+    git:
+      url: https://github.com/trisberg/quote.git
+      revision: main
+  successBuildHistoryLimit: 10
+  tag: docker.io/trisberg/quote:native

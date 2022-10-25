@@ -1,0 +1,10 @@
+---
+apiVersion: kpack.io/v1alpha2
+kind: ClusterStore
+metadata:
+  name: native
+spec:
+  sources:
+  - image: gcr.io/paketo-buildpacks/bellsoft-liberica:9.9.0-ea
+  - image: gcr.io/paketo-buildpacks/java-native-image
+  - image: gcr.io/paketo-buildpacks/nodejs

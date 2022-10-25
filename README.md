@@ -6,32 +6,21 @@
 
 Kubernetes:
 
-- kubectl
-- kubectx
-- kind: https://kind.sigs.k8s.io/docs/user/quick-start/#installing-from-release-binaries
-    ```
-    [ $(uname -m) = arm64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.14.0/kind-darwin-arm64
-    sudo install ./kind /usr/local/bin/kind
-    ```
+- kubectl: https://kubernetes.io/docs/tasks/tools/#kubectl
+- kind: https://kubernetes.io/docs/tasks/tools/#kind
 
 Knative:
 
 - https://knative.dev/docs/
 
 - kn CLI: https://knative.dev/docs/install/quickstart-install/#install-the-knative-cli
-    ```
-    install ~/Downloads/kn-darwin-arm64 ~/bin/kn
-    ```
 
 - kn quickstart: https://knative.dev/docs/install/quickstart-install/#install-the-knative-quickstart-plugin 
-    ```
-    install ~/Downloads/kn-quickstart-darwin-arm64 ~/bin/kn-quickstart
-    ```
 
-- kn func: https://github.com/knative-sandbox/kn-plugin-func/blob/main/docs/installing_cli.md#prebuilt-binary
-    ```
-    install ~/Downloads/func_darwin_arm64 ~/bin/kn-func
-    ```
+- func: https://github.com/knative/func/blob/main/docs/installing_cli.md
+
+
+### Quickstart
 
 Create cluster:
 
@@ -48,37 +37,35 @@ sudo kubectl port-forward -n kourier-system  svc/kourier 80:80
 ### Get started
 
 ```
-kn func create hello -l springboot -t http
-cd hello
- # kn func build --builder-image gcr.io/buildpacks/builder:v1  --image docker.io/trisberg/hello --push --verbose
-pack build trisberg/hello --path . --builder gcr.io/buildpacks/builder:v1 --publish
-pack build trisberg/hello --path . --builder paketobuildpacks/builder:base --publish
-kn func deploy --build disabled --image trisberg/hello --push=false
-curl -w'\n' -H "Content-Type: text/plain" http://hello.default.127.0.0.1.sslip.io -d test
-func invoke --target=http://hello.default.127.0.0.1.sslip.io --data test
+export FUNC_REGISTRY=docker.io/<your-docker-id>
+func create echo -l springboot -t http
+cd echo
+func build --verbose
+func deploy --build=false
+curl -w'\n' -H "Content-Type: text/plain" http://echo.default.127.0.0.1.sslip.io -d test
+func invoke --target=http://echo.default.127.0.0.1.sslip.io --data test
 ```
 
-### With Dockerfile
+<!-- ### With Dockerfile
 
 ```
+export DOCKER_ID=<your-docker-id>
 ./mvnw clean package
-docker build . -t trisberg/hello-arm
-docker push trisberg/hello-arm
-kn func deploy --build disabled --image trisberg/hello-arm --push=false
-curl -w'\n' -H "Content-Type: text/plain" http://hello.default.127.0.0.1.sslip.io -d test
-```
+docker build . -t $DOCKER_ID/echo-arm
+docker push $DOCKER_ID/echo-arm
+kn func deploy --build disabled --image $DOCKER_ID/echo-arm --push=false
+curl -w'\n' -H "Content-Type: text/plain" http://echo.default.127.0.0.1.sslip.io -d test
+``` -->
 
 ### With Jib
 
+Add this plugin to the `pom.xml`:
 ```
       <plugin>
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>jib-maven-plugin</artifactId>
         <version>3.2.1</version>
         <configuration>
-          <!-- <to>
-            <image>trisberg/hello-jib</image>
-          </to> -->
           <from>
             <image>eclipse-temurin:11-jre</image>
             <platforms>
@@ -96,8 +83,11 @@ curl -w'\n' -H "Content-Type: text/plain" http://hello.default.127.0.0.1.sslip.i
       </plugin>
 ```
 
+Then build the project:
+
 ```
-./mvnw compile jib:build -Dimage=trisberg/hello-jib
-kn func deploy --build disabled --image trisberg/hello-jib --push=false
-curl -w'\n' -H "Content-Type: text/plain" http://hello.default.127.0.0.1.sslip.io -d jib
+export DOCKER_ID=<your-docker-id>
+./mvnw compile jib:build -Dimage=$DOCKER_ID/echo-jib
+kn func deploy --build disabled --image $DOCKER_ID/echo-jib --push=false
+curl -w'\n' -H "Content-Type: text/plain" http://echo.default.127.0.0.1.sslip.io -d jib
 ```
