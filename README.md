@@ -4,6 +4,12 @@
 
 [Track: Beginner-Friendly Spring](https://springone.io/2022/sessions/getting-started-with-spring-functions-for-knative)
 
+[Slides](SpringOne%202022%20-%20Java%20Functions%20for%20Knative.pdf)
+
+[Demo app "quotes"](https://github.com/trisberg/quote)
+
+[Function templates](https://github.com/trisberg/func-templates)
+
 ## Setup
 
 Install the following:
